@@ -3,7 +3,9 @@ const mysql = require('mysql');
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 const bodyparser = require('body-parser');
-
+var cors = require('cors')
+ 
+app.use(cors())
 app.use(bodyparser.json())
 // Add the credentials to access your database
 var mysqlConnection = mysql.createConnection({
@@ -23,7 +25,8 @@ mysqlConnection.connect(function(err) {
     }
 });
 io.on('connection', socket => {
-  socket.on('message', ({ name, message }) => {
+  socket.on('message', ({ name, message,e }) => {
+    // console.log("lastinsert id",e);
     let sql = `INSERT INTO testTable(text,message)
      VALUES('${name}','${message}')`;
            mysqlConnection.query(sql, (err, rows, fields) =>{
@@ -33,6 +36,28 @@ io.on('connection', socket => {
            });
     
   })
+
+
+  socket.on('addLike', async function (data) {
+    console.log( data );
+    let count = data.count
+    io.emit(`appendLike`,{
+      data
+    })
+   
+    
+  })
+})
+
+app.get('/getcount', (req, res) =>{
+  mysqlConnection.query('SELECT * FROM testTable', (err, rows, fields)=>{
+    if(!err){
+    res.send(rows);
+    }
+    else{
+    console.log(err);
+    }
+})
 })
 
 http.listen(4000, function() {
