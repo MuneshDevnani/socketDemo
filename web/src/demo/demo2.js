@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import io from 'socket.io-client'
 
-const socket = io.connect('http://localhost:4000')
+const socket = io.connect('http://192.168.100.135:4000')
 
 function App() {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    fetch('http://localhost:4000/getcount',
+    fetch('http://192.168.100.135:4000/getcount',
     )
       .then(function (response) {
         console.log(response)
@@ -21,37 +21,22 @@ function App() {
   }, [])
 
   useEffect(() => {
-    socket.on('addLike', ({ count }) => {
-      console.log(count);
-
-    })
-  
-
-    
-    socket.on('appendLike', (fetchedData) => {
-      // console.log("data: ",fetchedData.data)
+    socket.on('addLike', (fetchedData) => {
+      console.log("data: ",fetchedData)
       // console.log("State: ",data)
      
       // testFunction(fetchedData);
       let temp = [...data]
-      
-      let temp2 =  temp.findIndex(ind => ind.id == fetchedData.data.id);
-      // console.log("Temp2 is : ",temp2)
-      // console.log("Temp is : ",temp[temp2])
+
+      let temp2 =  temp.findIndex(ind => ind.id === fetchedData.id);
+
       if(temp2 > -1){
-       temp[temp2].likeCount = fetchedData.data.count;
+       temp[temp2].likeCount = fetchedData.count;
        setData(temp)
       }
-      
-
-
-      
 
     })
   }, [data])
-  // useEffect(() => {
-
-  // }, [data])
 
   const countIncrement = e => {
     console.log(e);
@@ -62,6 +47,7 @@ function App() {
    }
   return (
     <div>
+      hi
       {data.map((items, index) => {
         return (
           <div key={index}>

@@ -38,14 +38,19 @@ io.on('connection', socket => {
   })
 
 
-  socket.on('addLike', async function (data) {
-    console.log( data );
-    let count = data.count
-    io.emit(`appendLike`,{
-      data
-    })
-   
-    
+  socket.on('addLike', async ({id, count})=>{
+    console.log( {id, count} );
+    // let count = data.count
+    let sql = `UPDATE testTable SET likeCount = ${count} WHERE id = ${id}`;
+
+    await mysqlConnection.query(sql, (err, rows, fields) =>{
+       console.log(rows);
+      // let lastInserId = rows.insertId
+      io.emit('addLike',{
+        id, count
+      })
+     });
+
   })
 })
 

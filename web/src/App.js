@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import './App.css'
-import Demo1 from './demo/demo1'
+// import Demo1 from './demo/demo1'
 import Demo2 from './demo/demo2'
 
 function App() {
